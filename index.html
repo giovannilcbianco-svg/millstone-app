@@ -5,52 +5,61 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#f97316">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-title" content="Millstone">
     <link rel="icon" href="./icon-192x192.png">
-    <link rel="apple-touch-icon" href="./icon-192x192.png">
     <link rel="manifest" href="./manifest.json">
     <title>Millstone Lunch Orders</title>
     <style>
-        body { margin: 0; font-family: system-ui, -apple-system, sans-serif; }
+        body { margin: 0; font-family: system-ui, sans-serif; }
         #loading { 
-            position: fixed; 
-            inset: 0; 
+            position: fixed; inset: 0; 
             background: linear-gradient(135deg, #f97316, #ea580c); 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            flex-direction: column;
-            color: white;
-            z-index: 9999;
+            display: flex; align-items: center; justify-content: center; 
+            flex-direction: column; color: white; z-index: 9999;
         }
         #loading img { width: 120px; animation: pulse 2s infinite; }
-        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+        @keyframes pulse { 50% { transform: scale(1.1); } }
         #loading.hide { opacity: 0; pointer-events: none; transition: opacity 0.5s; }
     </style>
 </head>
 <body>
     <div id="loading">
-        <img src="./icon-192x192.png" alt="Millstone">
+        <img src="./icon-192x192.png" alt="Logo">
         <h1>Millstone</h1>
         <p>Caricamento...</p>
     </div>
     <div id="root"></div>
     
-    <script>
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('./service-worker.js').catch(e => console.log('SW:', e));
-    }
-    window.addEventListener('load', () => {
-        setTimeout(() => document.getElementById('loading').classList.add('hide'), 500);
-    });
-    </script>
-    
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <script type="text/babel" src="./lunch-order-manager.tsx"></script>
-    <script type="text/babel">
-        ReactDOM.createRoot(document.getElementById('root')).render(<LunchOrderApp />);
+    
+    <script>
+    const { useState, useMemo, useEffect } = React;
+    
+    function LunchOrderApp() {
+        const [message, setMessage] = useState('App caricata! Sto preparando tutto...');
+        
+        useEffect(() => {
+            setTimeout(() => {
+                setMessage('✅ React funziona! Ora carico il resto...');
+                document.getElementById('loading').classList.add('hide');
+            }, 1000);
+        }, []);
+        
+        return React.createElement('div', 
+            { style: { padding: '40px', textAlign: 'center', fontSize: '20px' } },
+            React.createElement('h1', null, '🍽️ Millstone Restaurant'),
+            React.createElement('p', null, message),
+            React.createElement('p', null, 'App in costruzione - test connessione OK!')
+        );
+    }
+    
+    ReactDOM.createRoot(document.getElementById('root')).render(
+        React.createElement(LunchOrderApp)
+    );
+    
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('./service-worker.js').catch(console.log);
+    }
     </script>
 </body>
 </html>
